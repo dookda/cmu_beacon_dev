@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble UI Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #CCC;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            /* Adjust gap as needed */
+            padding: 5vw;
+            /* Relative padding */
+            max-width: 80vw;
+            /* Max width for larger screens */
+            margin: auto;
+        }
+
+        .grid-item {
+            box-sizing: border-box;
+            text-align: center;
+            width: 15vw;
+            /* Relative width */
+            height: 15vw;
+            /* Relative height, keep same as width for circle */
+            max-width: 100px;
+            /* Maximum size */
+            max-height: 100px;
+            /* Maximum size */
+            background: #BBB;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item:hover {
+            background: #FFF;
+        }
+
+        @media (max-width: 600px) {
+            .grid-item {
+                width: 25vw;
+                /* Larger size on smaller screens */
+                height: 25vw;
+                max-width: 75px;
+                /* Adjust maximum size for smaller screens */
+                max-height: 75px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bubble-container">
+
+        <div class="grid">
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+            <div class="grid-item"></div>
+        </div>
+    </div>
+    <script>
+        var items = document.querySelectorAll(".grid-item");
+
+        var h = window.innerHeight;
+        var w = window.innerWidth;
+
+        function onScroll() {
+            for (var i = 0; i < items.length; ++i) {
+                var pos = items[i].getBoundingClientRect();
+
+                var distanceFromCenter = Math.sqrt(
+                    Math.pow(pos.top + pos.height / 2 - h / 2, 2) +
+                    Math.pow(pos.left + pos.width / 2 - w / 2, 2)
+                );
+
+                var maxDistance = Math.sqrt(Math.pow(h / 2, 2) + Math.pow(w / 2, 2));
+                var scale = 1 - distanceFromCenter / maxDistance;
+
+                // Ensure the scale is within reasonable limits
+                scale = Math.max(0.5, Math.min(1.5, scale));
+
+                items[i].style.transform = "scale(" + scale + ")";
+            }
+        }
+
+        window.addEventListener('scroll', onScroll);
+        window.addEventListener('resize', function () {
+            h = window.innerHeight;
+            w = window.innerWidth;
+            onScroll(); // Recalculate on resize
+        });
+
+        onScroll(); // Initial call
+    </script>
+
+</body>
+
+</html>
