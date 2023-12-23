@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble UI Demo</title>
+    <style>
+        body,
+        html {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* background-color: #f0f0f0; */
+        }
+
+        .bubble-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .bubble {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #89CFF0;
+            color: white;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .bubble.clicked {
+            transform: scale(1.5);
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bubble-container">
+        <!-- Example bubbles -->
+        <div class="bubble">Bubble 1</div>
+        <div class="bubble">Bubble 2</div>
+        <div class="bubble">Bubble 3</div>
+        <div class="bubble">Bubble 4</div>
+        <div class="bubble">Bubble 5</div>
+        <div class="bubble">Bubble 6</div>
+        <div class="bubble">Bubble 7</div>
+        <div class="bubble">Bubble 8</div>
+        <div class="bubble">Bubble 9</div>
+        <div class="bubble">Bubble 10</div>
+        <div class="bubble">Bubble 11</div>
+        <div class="bubble">Bubble 12</div>
+        <div class="bubble">Bubble 13</div>
+        <div class="bubble">Bubble 14</div>
+        <div class="bubble">Bubble 15</div>
+        <div class="bubble">Bubble 16</div>
+        <div class="bubble">Bubble 17</div>
+        <div class="bubble">Bubble 18</div>
+        <div class="bubble">Bubble 19</div>
+        <div class="bubble">Bubble 20</div>
+        <div class="bubble">Bubble 21</div>
+        <div class="bubble">Bubble 22</div>
+        <div class="bubble">Bubble 23</div>
+        <div class="bubble">Bubble 24</div>
+        <div class="bubble">Bubble 25</div>
+    </div>
+    <script>
+        const bubbles = document.querySelectorAll('.bubble');
+
+        const scaleBubble = (bubble, distance) => {
+            const scale = 1 + (1 - Math.abs(distance)) * 0.5; // Scale up when close to the center
+            bubble.style.transform = `scale(${scale})`;
+        }
+
+        window.addEventListener('scroll', () => {
+            const viewportHeight = window.innerHeight;
+            bubbles.forEach(bubble => {
+                const bubbleRect = bubble.getBoundingClientRect();
+                const distanceFromCenter = 2 * (bubbleRect.top + bubbleRect.height / 2 - viewportHeight / 2) / viewportHeight;
+                scaleBubble(bubble, distanceFromCenter);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all the bubbles
+            const bubbles = document.querySelectorAll('.bubble');
+
+            bubbles.forEach(function (bubble) {
+                bubble.addEventListener('click', function () {
+                    bubbles.forEach(function (bub) {
+                        if (bub !== this) {
+                            bub.classList.remove('clicked');
+                        }
+                    });
+                    this.classList.toggle('clicked');
+                });
+            });
+        });
+
+    </script>
+</body>
+
+</html>
