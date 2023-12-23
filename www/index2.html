@@ -12,7 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 150vh;
             background: #CCC;
         }
 
@@ -20,26 +20,19 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            /* Adjust gap as needed */
+            gap: 1px;
             padding: 5vw;
-            /* Relative padding */
-            max-width: 80vw;
-            /* Max width for larger screens */
+            max-width: 100vw;
             margin: auto;
         }
 
         .grid-item {
             box-sizing: border-box;
             text-align: center;
-            width: 15vw;
-            /* Relative width */
-            height: 15vw;
-            /* Relative height, keep same as width for circle */
-            max-width: 100px;
-            /* Maximum size */
-            max-height: 100px;
-            /* Maximum size */
+            width: 50vw;
+            height: 50vw;
+            max-width: 250px;
+            max-height: 250px;
             background: #BBB;
             border-radius: 50%;
             display: flex;
@@ -48,19 +41,17 @@
             transition: transform 0.3s ease;
         }
 
-        .grid-item:hover {
-            background: #FFF;
-        }
-
         @media (max-width: 600px) {
             .grid-item {
-                width: 25vw;
-                /* Larger size on smaller screens */
-                height: 25vw;
-                max-width: 75px;
-                /* Adjust maximum size for smaller screens */
-                max-height: 75px;
+                width: 50vw;
+                height: 50vw;
+                max-width: 100px;
+                max-height: 100px;
             }
+        }
+
+        .grid-item:hover {
+            background: #FFF;
         }
     </style>
 </head>
@@ -83,30 +74,18 @@
             <div class="grid-item"></div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
         </div>
     </div>
     <script>
-        var items = document.querySelectorAll(".grid-item");
 
-        var h = window.innerHeight;
-        var w = window.innerWidth;
+        document.addEventListener('DOMContentLoaded', function () {
+            var items = document.querySelectorAll(".grid-item");
+            var currentActiveItem = null; // Track the currently active (enlarged) item
 
-        function onScroll() {
-            for (var i = 0; i < items.length; ++i) {
-                var pos = items[i].getBoundingClientRect();
+            var h = window.innerHeight;
+            var w = window.innerWidth;
 
+            function calculateScale(pos) {
                 var distanceFromCenter = Math.sqrt(
                     Math.pow(pos.top + pos.height / 2 - h / 2, 2) +
                     Math.pow(pos.left + pos.width / 2 - w / 2, 2)
@@ -114,24 +93,56 @@
 
                 var maxDistance = Math.sqrt(Math.pow(h / 2, 2) + Math.pow(w / 2, 2));
                 var scale = 1 - distanceFromCenter / maxDistance;
-
-                // Ensure the scale is within reasonable limits
-                scale = Math.max(0.5, Math.min(1.5, scale));
-
-                items[i].style.transform = "scale(" + scale + ")";
+                return Math.max(0.5, Math.min(1.5, scale));
             }
-        }
 
-        window.addEventListener('scroll', onScroll);
-        window.addEventListener('resize', function () {
-            h = window.innerHeight;
-            w = window.innerWidth;
-            onScroll(); // Recalculate on resize
+            function resetScaleAndZIndex() {
+                items.forEach(function (item) {
+                    var pos = item.getBoundingClientRect();
+                    var scale = calculateScale(pos);
+                    item.style.transform = "scale(" + scale + ")";
+                    item.style.zIndex = "0";
+                });
+                currentActiveItem = null;
+            }
+
+            function onScroll() {
+                if (!currentActiveItem) {
+                    for (var i = 0; i < items.length; ++i) {
+                        var pos = items[i].getBoundingClientRect();
+                        var scale = calculateScale(pos);
+                        items[i].style.transform = "scale(" + scale + ")";
+                    }
+                }
+            }
+
+            items.forEach(function (item) {
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    if (currentActiveItem !== this) {
+                        resetScaleAndZIndex();
+                        this.style.transform = "scale(1.5)";
+                        this.style.zIndex = "10";
+                        currentActiveItem = this;
+                    } else {
+                        resetScaleAndZIndex();
+                    }
+                });
+            });
+
+            document.body.addEventListener('click', resetScaleAndZIndex);
+
+            window.addEventListener('scroll', onScroll);
+            window.addEventListener('resize', function () {
+                h = window.innerHeight;
+                w = window.innerWidth;
+                resetScaleAndZIndex();
+                onScroll();
+            });
+
+            onScroll(); // Initial call
         });
-
-        onScroll(); // Initial call
     </script>
-
 </body>
 
 </html>
